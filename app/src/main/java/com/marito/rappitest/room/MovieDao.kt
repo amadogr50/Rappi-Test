@@ -22,11 +22,11 @@ interface MovieDao {
     fun hasMovie(movieId: Int): Int
 
     @Query("SELECT * FROM movie") //ToDo: Implement condition
-    fun getPopularMovies()
+    fun getPopularMovies(): LiveData<List<Movie>>
 
     @Query("SELECT * FROM movie") //ToDo: Implement condition
-    fun getTopRatedMovies()
+    fun getTopRatedMovies(): LiveData<List<Movie>>
 
     @Query("SELECT * FROM movie") //ToDo: Implement condition
-    fun getUpcomingMovies()
+    fun getUpcomingMovies(): LiveData<List<Movie>>
 }
