@@ -1,13 +1,15 @@
 package com.marito.rappitest.webservices
 
+import com.marito.rappitest.models.Movie
 import com.marito.rappitest.models.MovieResponse
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface TmdbApi {
-/*
+
     @GET("movie/{movie_id}")
-    fun getMovie(@Path("movie_id") movieId: Int): Call<Movie>>*/
+    fun getMovie(@Path("movie_id") movieId: Int): Call<Movie>
 
     @GET("movie/popular")
     fun getPopularMovies(): Call<MovieResponse>

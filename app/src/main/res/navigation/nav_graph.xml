@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.marito.rappitest.ui.MainFragment"
-        android:label="fragment_main"
+        android:label="@string/movies"
         tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_movieDetailFragment"
@@ -18,5 +18,9 @@
         android:id="@+id/movieDetailFragment"
         android:name="com.marito.rappitest.ui.MovieDetailFragment"
         android:label="fragment_movie_detail"
-        tools:layout="@layout/fragment_movie_detail" />
+        tools:layout="@layout/fragment_movie_detail" >
+        <argument
+            android:name="movieId"
+            app:argType="integer" />
+    </fragment>
 </navigation>

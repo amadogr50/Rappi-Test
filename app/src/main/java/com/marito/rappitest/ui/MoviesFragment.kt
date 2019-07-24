@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.marito.rappitest.R
 import com.marito.rappitest.adapters.MovieAdapter
 import com.marito.rappitest.adapters.MovieAdapterListener
 import com.marito.rappitest.databinding.FragmentMoviesBinding
@@ -37,7 +39,8 @@ class MoviesFragment : Fragment() {
         binding.lifecycleOwner = this
 
         movieAdapter = MovieAdapter(context!!, MovieAdapterListener { movie ->
-            //ToDo: Navigate to MovieDetailFragment
+            val action = MainFragmentDirections.actionMainFragmentToMovieDetailFragment(movie.id)
+            findNavController().navigate(action)
         })
 
         binding.movies.apply {

@@ -63,12 +63,21 @@ class MovieRepository constructor(
     }
 
 
-/*
-    fun getMovie(movieId: Int, apiKey: String): LiveData<Movie> {
-        refreshMovie(movieId, apiKey)
-        return movieDao.getMovie(movieId)
+    fun getMovie(movieId: Int): LiveData<Movie> {
+        val data = MutableLiveData<Movie>()
+        tmdbApi.getMovie(movieId).enqueue(object : Callback<Movie> {
+            override fun onFailure(call: Call<Movie>, t: Throwable) {
+                TODO()
+            }
+
+            override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
+                data.postValue(response.body())
+            }
+        })
+        return data
     }
 
+    /*
     private fun refreshMovie(movieId: Int, apiKey : String) {
         executor.execute {
             val movieExist = movieDao.hasMovie(movieId)

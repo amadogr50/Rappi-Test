@@ -6,9 +6,11 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: "androidx.navigation.safeargs"
+
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.0"
+    buildToolsVersion "29.0.1"
     defaultConfig {
         applicationId "com.marito.rappitest"
         minSdkVersion 23
@@ -46,7 +48,6 @@ dependencies {
     def kotlinCoroutineVersion = "1.0.1"
     def picassoVersion = "2.71828"
 
-
     //Moshi
     implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
@@ -77,6 +78,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.lifecycle:lifecycle-extensions:2.0.0"
     implementation 'com.google.android.material:material:1.0.0'
+
+    //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:2.1.0-beta02"
     implementation "androidx.navigation:navigation-ui-ktx:2.1.0-beta02"
 
