@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.marito.rappitest.databinding.FragmentMovieDetailBinding
 import com.marito.rappitest.util.Constants
+import com.marito.rappitest.util.Injection
 import com.marito.rappitest.viewmodels.MovieDetailFactory
 import com.marito.rappitest.viewmodels.MovieDetailViewModel
 import com.squareup.picasso.Picasso
@@ -24,7 +25,7 @@ class MovieDetailFragment : Fragment() {
 
         val movieId = MovieDetailFragmentArgs.fromBundle(arguments!!).movieId
 
-        movieDetailViewModel = ViewModelProviders.of(this, MovieDetailFactory(movieId)).get(MovieDetailViewModel::class.java)
+        movieDetailViewModel = ViewModelProviders.of(this, Injection.provideMovieDetailFactory(context!!, movieId)).get(MovieDetailViewModel::class.java)
         movieDetailViewModel.movie.observe(this, Observer { movie ->
             binding.movie = movie
 

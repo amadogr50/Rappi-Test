@@ -8,52 +8,52 @@ import com.google.gson.annotations.SerializedName
 @Entity
 data class Movie(
     @PrimaryKey(autoGenerate = false)
-    val id: Int,
+    val id: Int = 0,
 
     @SerializedName("vote_average")
     @ColumnInfo(name = "vote_average")
-    val voteAverage: Float,
+    var voteAverage: Float = 0f,
 
     @SerializedName("vote_count")
     @ColumnInfo(name = "vote_count")
-    val voteCount: Int,
+    var voteCount: Int = 0,
 
     @ColumnInfo(name = "video")
-    val video: Boolean,
+    var video: Boolean = false,
 
     @SerializedName("media_type")
     @ColumnInfo(name = "media_type")
-    val mediaType: String,
+    var mediaType: String? = "",
 
-    val title: String,
+    var title: String = "",
 
-    val popularity: Float,
+    var popularity: Float = 0f,
 
     @SerializedName("poster_path")
     @ColumnInfo(name = "poster_path")
-    val posterPath: String,
+    var posterPath: String = "",
 
     @SerializedName("original_language")
     @ColumnInfo(name = "original_language")
-    val originalLanguage: String,
+    var originalLanguage: String,
 
     @SerializedName("original_title")
     @ColumnInfo(name = "original_title")
-    val originalTitle: String,
+    var originalTitle: String = "",
 
 //    @SerializedName("genre_ids")
 //    @ColumnInfo(name = "genre_ids")
-//    val genreIds: List<Int>,
+//    var genreIds: List<Int>,
 
     @SerializedName("backdrop_path")
     @ColumnInfo(name = "backdrop_path")
-    val backdropPath: String,
+    var backdropPath: String? = "",
 
-    val adult: Boolean,
+    var adult: Boolean = false,
 
-    val overview: String,
+    var overview: String = "",
 
     @SerializedName("release_date")
     @ColumnInfo(name = "release_date")
-    val releaseDate: String
+    var releaseDate: String = ""
 )

@@ -11,11 +11,10 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.marito.rappitest.R
 import com.marito.rappitest.adapters.MovieAdapter
 import com.marito.rappitest.adapters.MovieAdapterListener
 import com.marito.rappitest.databinding.FragmentMoviesBinding
-import com.marito.rappitest.viewmodels.MoviesFactory
+import com.marito.rappitest.util.Injection
 import com.marito.rappitest.viewmodels.MoviesViewModel
 
 private const val KIND = "kind"
@@ -48,7 +47,7 @@ class MoviesFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
 
-        moviesViewModel = ViewModelProviders.of(this, MoviesFactory(kind)).get(MoviesViewModel::class.java)
+        moviesViewModel = ViewModelProviders.of(this, Injection.provideMoviesFactory(context!!, kind)).get(MoviesViewModel::class.java)
 
         moviesViewModel.movies.observe(this, Observer { movies ->
             movieAdapter.submitList(movies)

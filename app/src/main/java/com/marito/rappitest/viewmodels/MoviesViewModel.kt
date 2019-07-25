@@ -6,18 +6,15 @@ import androidx.lifecycle.ViewModel
 import com.marito.rappitest.models.Movie
 import com.marito.rappitest.repositories.MovieRepository
 import com.marito.rappitest.util.Constants
+import com.marito.rappitest.util.Injection
 import com.marito.rappitest.webservices.ApiFactory
 
-class MoviesViewModel(private val kind: Int) : ViewModel() {
-
-    private val movieRepository: MovieRepository = MovieRepository(ApiFactory.tmdbApi)
+class MoviesViewModel(
+    private val movieRepository: MovieRepository,
+    private val kind: Int
+) : ViewModel() {
 
     val movies: LiveData<List<Movie>>
-        get() = when (kind) {
-            Constants.PopularMovies -> movieRepository.getPopularMovies()
-            Constants.TopRatedMovies -> movieRepository.getTopRatedMovies()
-            Constants.UpcomingMovies -> movieRepository.getUpcomingMovies()
-            else -> MutableLiveData()
-        }
+        get() = movieRepository.getMovies(kind).data
 
 }
