@@ -21,6 +21,7 @@ private const val KIND = "kind"
 
 class MoviesFragment : Fragment() {
     private lateinit var binding: FragmentMoviesBinding
+    private lateinit var moviesList: RecyclerView
     private lateinit var moviesViewModel: MoviesViewModel
     private lateinit var movieAdapter: MovieAdapter
     private var kind: Int = 0
@@ -42,18 +43,35 @@ class MoviesFragment : Fragment() {
             findNavController().navigate(action)
         })
 
-        binding.movies.apply {
+        moviesList = binding.movies
+        moviesList.apply {
             adapter = movieAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
+        setupScrollListener()
 
-        moviesViewModel = ViewModelProviders.of(this, Injection.provideMoviesFactory(context!!, kind)).get(MoviesViewModel::class.java)
+        moviesViewModel = ViewModelProviders.of(this, Injection.provideMoviesFactory(context!!, kind))
+            .get(MoviesViewModel::class.java)
 
         moviesViewModel.movies.observe(this, Observer { movies ->
             movieAdapter.submitList(movies)
         })
 
         return binding.root
+    }
+
+    private fun setupScrollListener() {
+        val layoutManager = moviesList.layoutManager as LinearLayoutManager
+        moviesList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val totalItemCount = layoutManager.itemCount
+                val visibleItemCount = layoutManager.childCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+
+                moviesViewModel.listScrolled(visibleItemCount, lastVisibleItem, totalItemCount)
+            }
+        })
     }
 
     companion object {

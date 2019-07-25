@@ -67,6 +67,10 @@ class MovieRepository constructor(
         return MovieResult(data, networkErrors)
     }
 
+    fun requestMore(kind: Int) {
+        requestAndSaveMovies(kind)
+    }
+
     private fun requestAndSaveMovies(kind: Int) {
         if (isRequestInProgress) return
 
