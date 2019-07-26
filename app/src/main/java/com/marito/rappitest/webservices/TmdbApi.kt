@@ -3,6 +3,8 @@ package com.marito.rappitest.webservices
 import android.util.Log
 import com.marito.rappitest.models.Movie
 import com.marito.rappitest.models.MovieResponse
+import com.marito.rappitest.models.Video
+import com.marito.rappitest.models.VideoResponse
 import com.marito.rappitest.util.Constants
 import retrofit2.Call
 import retrofit2.Callback
@@ -58,6 +60,39 @@ fun getMovies(
     )
 }
 
+fun getVideosOfMovie(
+    tmdbApi: TmdbApi,
+    movieId: Int,
+    onSuccess: (videos: List<Video>) -> Unit,
+    onError: (error: String) -> Unit
+) {
+    val request = tmdbApi.getVideosOfMovie(movieId)
+    Log.d(TAG, "movieId: $movieId")
+
+    request.enqueue(
+        object : Callback<VideoResponse> {
+            override fun onFailure(call: Call<VideoResponse>, t: Throwable) {
+                Log.d(TAG, "fail to get data")
+                onError(t.message ?: "unknown error")
+            }
+
+            override fun onResponse(call: Call<VideoResponse>, response: Response<VideoResponse>) {
+                Log.d(TAG, "got a response $response")
+                if (response.isSuccessful) {
+                    val videos = response.body()?.results ?: emptyList()
+                    //Add movieId to each video
+                    for(video in videos) {
+                        video.movieId = movieId
+                    }
+                    onSuccess(videos)
+                } else {
+                    onError(response.errorBody()?.string() ?: "Unknown error")
+                }
+            }
+        })
+
+}
+
 interface TmdbApi {
 
     @GET("movie/{movie_id}")
@@ -71,4 +106,7 @@ interface TmdbApi {
 
     @GET("movie/upcoming")
     fun getUpcomingMovies(@Query("page") page: Int): Call<MovieResponse>
+
+    @GET("movie/{movie_id}/videos")
+    fun getVideosOfMovie(@Path("movie_id") movieId: Int) : Call<VideoResponse>
 }

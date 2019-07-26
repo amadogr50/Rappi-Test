@@ -39,7 +39,7 @@ class MoviesFragment : Fragment() {
         binding.lifecycleOwner = this
 
         movieAdapter = MovieAdapter(context!!, MovieAdapterListener { movie ->
-            val action = MainFragmentDirections.actionMainFragmentToMovieDetailFragment(movie.id)
+            val action = MainFragmentDirections.actionMainFragmentToMovieDetailFragment(movie.id, movie.title)
             findNavController().navigate(action)
         })
 

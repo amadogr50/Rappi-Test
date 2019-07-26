@@ -4,6 +4,7 @@ import com.marito.rappitest.BuildConfig
 
 object Constants {
     const val tmbdApiKey = BuildConfig.TMDB_API_KEY
+    const val youtubeApiKey = BuildConfig.YOUTUBE_API_KEY
 
     const val tmdbImageBaseUrl = "https://image.tmdb.org/t/p/w500/"
     const val tmdbBaseUrl = "https://api.themoviedb.org/3/"

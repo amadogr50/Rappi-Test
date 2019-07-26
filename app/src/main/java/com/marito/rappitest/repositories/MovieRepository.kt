@@ -79,7 +79,7 @@ class MovieRepository constructor(
             tmdbApi,
             kind,
             lastRequestedPage, { movies ->
-                cache.insert(movies) {
+                cache.insertMovies(movies) {
                     lastRequestedPage++
                     isRequestInProgress = false
                 }

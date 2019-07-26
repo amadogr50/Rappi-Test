@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.marito.rappitest.db.MovieDatabase
 import com.marito.rappitest.db.TmdbLocalCache
 import com.marito.rappitest.repositories.MovieRepository
+import com.marito.rappitest.repositories.VideoRepository
 import com.marito.rappitest.viewmodels.MovieDetailFactory
 import com.marito.rappitest.viewmodels.MoviesFactory
 import com.marito.rappitest.webservices.ApiFactory
@@ -24,11 +25,15 @@ object Injection {
         return MovieRepository(ApiFactory.tmdbApi, provideCache(context))
     }
 
+    private fun provideVideoRepository(context: Context) : VideoRepository {
+        return VideoRepository(ApiFactory.tmdbApi, provideCache(context))
+    }
+
     fun provideMoviesFactory(context: Context, kind : Int): ViewModelProvider.Factory {
         return MoviesFactory(provideMovieRepository(context), kind)
     }
 
     fun provideMovieDetailFactory(context: Context, movieId: Int): ViewModelProvider.Factory {
-        return MovieDetailFactory(provideMovieRepository(context), movieId)
+        return MovieDetailFactory(provideVideoRepository(context), provideMovieRepository(context), movieId)
     }
 }

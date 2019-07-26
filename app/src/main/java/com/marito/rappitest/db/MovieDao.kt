@@ -3,13 +3,14 @@ package com.marito.rappitest.db
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.marito.rappitest.models.Movie
+import com.marito.rappitest.models.Video
 
 @Dao
 interface MovieDao {
     @Transaction
     fun updateData(movies: List<Movie>) {
         deleteAllUsers()
-        insert(movies)
+        insertMovies(movies)
     }
 
     @Query("DELETE FROM movie")
@@ -28,7 +29,7 @@ interface MovieDao {
     fun hasMovie(movieId: Int): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(movies: List<Movie>)
+    fun insertMovies(movies: List<Movie>)
 
     @Query("SELECT * FROM movie ORDER BY popularity DESC")
     fun getPopularMovies(): LiveData<List<Movie>>
@@ -38,4 +39,10 @@ interface MovieDao {
 
     @Query("SELECT * FROM movie ORDER BY release_date DESC")
     fun getUpcomingMovies(): LiveData<List<Movie>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertVideos(videos: List<Video>)
+
+    @Query("SELECT * FROM video WHERE movie_id = :movieId")
+    fun getVideosOfMovie(movieId: Int): LiveData<List<Video>>
 }
