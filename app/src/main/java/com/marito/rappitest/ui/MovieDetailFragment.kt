@@ -35,9 +35,11 @@ class MovieDetailFragment : Fragment(), YouTubePlayer.OnInitializedListener {
 
         initYouTube()
 
-        binding.playButton.setOnClickListener{view ->
+        binding.playButton.setOnClickListener { view ->
             view.visibility = View.GONE
-            youTubePlayer?.loadVideo(videoId)
+            if (videoId != null) {
+                youTubePlayer?.loadVideo(videoId)
+            }
         }
 
         val movieId = MovieDetailFragmentArgs.fromBundle(arguments!!).movieId
@@ -47,7 +49,9 @@ class MovieDetailFragment : Fragment(), YouTubePlayer.OnInitializedListener {
                 .get(MovieDetailViewModel::class.java)
         movieDetailViewModel.movie.observe(this, Observer { movie ->
             binding.movie = movie
-            Picasso.get().load(Constants.tmdbImageBaseUrl + movie.posterPath).into(binding.poster)
+            if (movie.posterPath != null) {
+                Picasso.get().load(Constants.tmdbImageBaseUrl + movie.posterPath).into(binding.poster)
+            }
         })
 
         movieDetailViewModel.videos.observe(this, Observer { videos ->

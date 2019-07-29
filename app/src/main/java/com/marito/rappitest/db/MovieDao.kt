@@ -45,4 +45,8 @@ interface MovieDao {
 
     @Query("SELECT * FROM video WHERE movie_id = :movieId")
     fun getVideosOfMovie(movieId: Int): LiveData<List<Video>>
+
+    @Transaction
+    @Query("SELECT * FROM movie JOIN moviefts ON (movie.id = moviefts.docid) WHERE moviefts MATCH :query")
+    fun searchMovie(query: String): LiveData<List<Movie>>
 }

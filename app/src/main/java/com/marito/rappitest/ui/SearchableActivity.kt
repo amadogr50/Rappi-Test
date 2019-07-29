@@ -8,34 +8,37 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.marito.rappitest.R
-import com.marito.rappitest.databinding.ActivityMainBinding
+import com.marito.rappitest.databinding.ActivitySearchableBinding
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private lateinit var navController: NavController
+class SearchableActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySearchableBinding
+    private var navController: NavController? = null
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private var query: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_searchable)
+        handleIntent(intent)
 
         binding.appBar.outlineProvider = null
         setSupportActionBar(binding.toolbar)
 
-        val host = supportFragmentManager.findFragmentById(R.id.host) as NavHostFragment
-        navController = host.navController
+        navController = findNavController(R.id.host)
 
-        appBarConfiguration = AppBarConfiguration.Builder(navController.graph).build()
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        appBarConfiguration = AppBarConfiguration.Builder(navController!!.graph).build()
+        setupActionBarWithNavController(navController!!, appBarConfiguration)
+
+        updateSearchMovies()
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        return navController!!.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -43,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.main, menu)
 
         val searchView = menu!!.findItem(R.id.search).actionView as SearchView
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 val intent = Intent(applicationContext, SearchableActivity::class.java)
@@ -56,6 +60,37 @@ class MainActivity : AppCompatActivity() {
                 return true
             }
         })
+
+        searchView.apply {
+            setQuery(query, false)
+            setIconifiedByDefault(false) // Do not iconify the widget; expand it by default
+        }
+
         return true
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent!!)
+    }
+
+    private fun handleIntent(intent: Intent) {
+        if (Intent.ACTION_SEARCH == intent.action) {
+            intent.getStringExtra(SearchManager.QUERY)?.also { query ->
+                this.query = query
+            }
+        }
+
+        updateSearchMovies()
+    }
+
+    fun updateSearchMovies() {
+        if (navController != null) {
+            val args = Bundle()
+            args.putString("query", query)
+            navController!!.popBackStack()
+            navController!!.navigate(R.id.searchMoviesFragment, args)
+        }
     }
 }

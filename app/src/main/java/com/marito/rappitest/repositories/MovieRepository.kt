@@ -7,6 +7,7 @@ import com.marito.rappitest.models.Movie
 import com.marito.rappitest.models.MovieResult
 import com.marito.rappitest.webservices.TmdbApi
 import com.marito.rappitest.webservices.getMovies
+import com.marito.rappitest.webservices.searchMovie
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -67,8 +68,36 @@ class MovieRepository constructor(
         return MovieResult(data, networkErrors)
     }
 
+    fun searchMovie(query: String): MovieResult {
+        lastRequestedPage = 1
+        searchAndSaveMovies(query)
+
+        //Get data from local cache
+        val data = cache.searchMovie(query)
+
+        return MovieResult(data, networkErrors)
+
+    }
+
     fun requestMore(kind: Int) {
         requestAndSaveMovies(kind)
+    }
+
+    fun requestMore(query: String) {
+        searchAndSaveMovies(query)
+    }
+
+    private fun searchAndSaveMovies(query: String) {
+        if (isRequestInProgress) return
+
+        isRequestInProgress = true
+        searchMovie(
+            tmdbApi,
+            query,
+            lastRequestedPage,
+            onSuccess,
+            onError
+        )
     }
 
     private fun requestAndSaveMovies(kind: Int) {
@@ -78,14 +107,22 @@ class MovieRepository constructor(
         getMovies(
             tmdbApi,
             kind,
-            lastRequestedPage, { movies ->
-                cache.insertMovies(movies) {
-                    lastRequestedPage++
-                    isRequestInProgress = false
-                }
-            }, { error ->
-                networkErrors.postValue(error)
-                isRequestInProgress = false
-            })
+            lastRequestedPage,
+            onSuccess,
+            onError
+        )
+    }
+
+    private val onSuccess: (movies: List<Movie>) -> Unit = { movies ->
+        cache.insertMovies(movies) {
+            lastRequestedPage++
+            isRequestInProgress = false
+        }
+
+    }
+
+    private val onError: (error: String) -> Unit = { error ->
+        networkErrors.postValue(error)
+        isRequestInProgress = false
     }
 }

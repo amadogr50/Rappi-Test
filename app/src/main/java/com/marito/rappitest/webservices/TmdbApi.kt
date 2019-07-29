@@ -93,6 +93,36 @@ fun getVideosOfMovie(
 
 }
 
+fun searchMovie(
+    tmdbApi: TmdbApi,
+    query: String,
+    page: Int,
+    onSuccess: (movies: List<Movie>) -> Unit,
+    onError: (error: String) -> Unit
+) {
+    val request = tmdbApi.searchMovie(query, page)
+    Log.d(TAG, "query: $query")
+
+    request.enqueue(
+        object : Callback<MovieResponse> {
+            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+                Log.d(TAG, "fail to get data")
+                onError(t.message ?: "unknown error")
+            }
+
+            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
+                Log.d(TAG, "got a response $response")
+                if (response.isSuccessful) {
+                    val movies = response.body()?.results ?: emptyList()
+                    onSuccess(movies)
+                } else {
+                    onError(response.errorBody()?.string() ?: "Unknown error")
+                }
+            }
+        })
+
+}
+
 interface TmdbApi {
 
     @GET("movie/{movie_id}")
@@ -109,4 +139,7 @@ interface TmdbApi {
 
     @GET("movie/{movie_id}/videos")
     fun getVideosOfMovie(@Path("movie_id") movieId: Int) : Call<VideoResponse>
+
+    @GET("search/movie")
+    fun searchMovie(@Query("query") query: String, @Query("page") page: Int): Call<MovieResponse>
 }

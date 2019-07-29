@@ -5,4 +5,6 @@
     <string name="top_rated">Top Rated</string>
     <string name="upcoming">Upcoming</string>
     <string name="movies">Movies</string>
+    <string name="search">Search</string>
+    <string name="search_movies">Search movies</string>
 </resources>

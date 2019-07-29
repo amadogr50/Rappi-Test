@@ -60,4 +60,8 @@ class TmdbLocalCache (
     fun getVideosOfMovie(movieId: Int) : LiveData<List<Video>> {
         return movieDao.getVideosOfMovie(movieId)
     }
+
+    fun searchMovie(query: String): LiveData<List<Movie>> {
+        return movieDao.searchMovie(query)
+    }
 }

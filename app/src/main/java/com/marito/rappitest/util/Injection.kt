@@ -8,6 +8,7 @@ import com.marito.rappitest.repositories.MovieRepository
 import com.marito.rappitest.repositories.VideoRepository
 import com.marito.rappitest.viewmodels.MovieDetailFactory
 import com.marito.rappitest.viewmodels.MoviesFactory
+import com.marito.rappitest.viewmodels.SearchMoviesFactory
 import com.marito.rappitest.webservices.ApiFactory
 import java.util.concurrent.Executors
 
@@ -35,5 +36,9 @@ object Injection {
 
     fun provideMovieDetailFactory(context: Context, movieId: Int): ViewModelProvider.Factory {
         return MovieDetailFactory(provideVideoRepository(context), provideMovieRepository(context), movieId)
+    }
+
+    fun provideSearchMoviesFactory(context: Context, query: String): ViewModelProvider.Factory {
+        return SearchMoviesFactory(provideMovieRepository(context), query)
     }
 }
