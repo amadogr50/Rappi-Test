@@ -42,8 +42,6 @@ class MovieRepository constructor(
      * Gets a movie from movieID
      */
     fun getMovie(movieId: Int): LiveData<Movie> {
-        refreshMovie(movieId)
-
         //Get data from local cache
         return cache.getMovie(movieId)
     }
