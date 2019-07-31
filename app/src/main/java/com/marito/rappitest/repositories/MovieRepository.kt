@@ -8,9 +8,6 @@ import com.marito.rappitest.models.MovieResult
 import com.marito.rappitest.webservices.TmdbApi
 import com.marito.rappitest.webservices.getMovies
 import com.marito.rappitest.webservices.searchMovie
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import javax.inject.Singleton
 
 const val TAG = "MovieRepository"
@@ -40,18 +37,15 @@ class MovieRepository constructor(
      */
     private var isRequestInProgress = false
 
-    fun getMovie(movieId: Int): LiveData<Movie> {
-        val data = MutableLiveData<Movie>()
-        tmdbApi.getMovie(movieId).enqueue(object : Callback<Movie> {
-            override fun onFailure(call: Call<Movie>, t: Throwable) {
-                TODO()
-            }
 
-            override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
-                data.postValue(response.body())
-            }
-        })
-        return data
+    /**
+     * Gets a movie from movieID
+     */
+    fun getMovie(movieId: Int): LiveData<Movie> {
+        refreshMovie(movieId)
+
+        //Get data from local cache
+        return cache.getMovie(movieId)
     }
 
     /**
@@ -85,6 +79,22 @@ class MovieRepository constructor(
 
     fun requestMore(query: String) {
         searchAndSaveMovies(query)
+    }
+
+    private fun refreshMovie(movieId: Int) {
+        if (isRequestInProgress) return
+
+        isRequestInProgress = true
+        com.marito.rappitest.webservices.getMovie(
+            tmdbApi,
+            movieId, { movie ->
+                cache.insertMovie(movie) {
+                    isRequestInProgress = false
+                }
+            }, { error ->
+                networkErrors.postValue(error)
+                isRequestInProgress = false
+            })
     }
 
     private fun searchAndSaveMovies(query: String) {

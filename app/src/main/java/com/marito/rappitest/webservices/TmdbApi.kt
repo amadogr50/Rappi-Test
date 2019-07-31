@@ -60,6 +60,32 @@ fun getMovies(
     )
 }
 
+fun getMovie(
+    tmdbApi: TmdbApi,
+    movieId: Int,
+    onSuccess: (movie: Movie) -> Unit,
+    onError: (error: String) -> Unit
+) {
+    tmdbApi.getMovie(movieId).enqueue(
+        object : Callback<Movie> {
+            override fun onFailure(call: Call<Movie>, t: Throwable) {
+                Log.d(TAG, "fail to get data")
+                onError(t.message ?: "unknown error")
+            }
+
+            override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
+                Log.d(TAG, "got a response $response")
+                if (response.isSuccessful) {
+                    val movie = response.body()
+                    onSuccess(movie!!)
+                } else {
+                    onError(response.errorBody()?.string() ?: "Unkown error")
+                }
+            }
+        }
+    )
+}
+
 fun getVideosOfMovie(
     tmdbApi: TmdbApi,
     movieId: Int,

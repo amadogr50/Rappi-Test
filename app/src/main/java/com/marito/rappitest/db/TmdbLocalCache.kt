@@ -17,6 +17,13 @@ class TmdbLocalCache (
     private val ioExecutor: Executor
 ) {
 
+    fun insertMovie(movie: Movie, insertFinished: () -> Unit) {
+        ioExecutor.execute {
+            Log.d(TAG, "inserting movie")
+            movieDao.insert(movie)
+            insertFinished()
+        }
+    }
 
     /**
      * Insert a list of movies in the database on a background thread
@@ -38,6 +45,10 @@ class TmdbLocalCache (
             movieDao.insertVideos(videos)
             insertFinished()
         }
+    }
+
+    fun getMovie(movieId: Int): LiveData<Movie> {
+        return movieDao.getMovie(movieId)
     }
 
     /**
